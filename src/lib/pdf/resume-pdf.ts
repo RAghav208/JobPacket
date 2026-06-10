@@ -28,7 +28,8 @@ export function buildResumeDoc(params: ResumePdfParams): jsPDF {
   doc.setFontSize(10.5);
 
   // splitTextToSize wraps to width AND respects existing newlines.
-  const lines: string[] = doc.splitTextToSize(params.resumeText.replace(/\r\n?/g, "\n"), maxW);
+  const text = normalizeForPdf(params.resumeText.replace(/\r\n?/g, "\n"));
+  const lines: string[] = doc.splitTextToSize(text, maxW);
 
   let y = margin;
   for (const line of lines) {
@@ -49,6 +50,21 @@ export function resumePdfFilename(params: ResumePdfParams): string {
 /** Trigger a browser download of the ATS-friendly résumé PDF. */
 export function downloadResumePdf(params: ResumePdfParams): void {
   buildResumeDoc(params).save(resumePdfFilename(params));
+}
+
+/**
+ * Map common Unicode punctuation to ASCII so the standard PDF font renders it
+ * reliably (smart quotes, dashes, bullets, ellipsis, nbsp). Non-Latin scripts
+ * (e.g. Devanagari) still need a Unicode font embed — tracked in AUDIT.md (P0-4).
+ */
+export function normalizeForPdf(s: string): string {
+  return s
+    .replace(/[‘’‚‛]/g, "'")
+    .replace(/[“”„‟]/g, '"')
+    .replace(/[–—―]/g, "-")
+    .replace(/…/g, "...")
+    .replace(/ /g, " ")
+    .replace(/[•●▪◦⁃]/g, "-");
 }
 
 function pdfName(company?: string, jobTitle?: string): string {

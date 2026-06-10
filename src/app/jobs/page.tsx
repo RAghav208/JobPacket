@@ -1,18 +1,12 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { JobPosting } from "@/lib/job-sources/types";
 import { Button } from "@/components/ui/button";
 import { Card, MetaLabel } from "@/components/ui/card";
 
 const JD_KEY = "jobpacket:jd";
-
-const SOURCES = [
-  { id: "naukri", label: "Naukri" },
-  { id: "linkedin", label: "LinkedIn" },
-  { id: "indeed", label: "Indeed" },
-];
 
 type SearchState =
   | { status: "idle" }
@@ -25,8 +19,20 @@ export default function JobsPage() {
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [location, setLocation] = useState("India");
-  const [sourceId, setSourceId] = useState("naukri");
+  const [sources, setSources] = useState<Array<{ id: string; label: string }>>([]);
+  const [sourceId, setSourceId] = useState("ats");
   const [state, setState] = useState<SearchState>({ status: "idle" });
+
+  useEffect(() => {
+    fetch("/api/search")
+      .then((r) => r.json())
+      .then((d) => {
+        const list: Array<{ id: string; label: string }> = d.sources ?? [];
+        setSources(list);
+        if (list[0]) setSourceId((cur) => (list.some((s) => s.id === cur) ? cur : list[0]!.id));
+      })
+      .catch(() => setSources([]));
+  }, []);
 
   async function search() {
     if (!query.trim()) return;
@@ -88,7 +94,7 @@ export default function JobsPage() {
             onChange={(e) => setSourceId(e.target.value)}
             className="h-10 w-full rounded-control border border-border bg-canvas px-3 text-sm text-fg outline-none focus:border-border-strong"
           >
-            {SOURCES.map((s) => (
+            {(sources.length ? sources : [{ id: "ats", label: "Company boards (ATS)" }]).map((s) => (
               <option key={s.id} value={s.id}>
                 {s.label}
               </option>
