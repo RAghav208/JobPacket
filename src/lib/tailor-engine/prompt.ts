@@ -1,5 +1,4 @@
 import type { ChatMessage } from "../provider-registry/types";
-import type { ScoreResult } from "../score-engine/types";
 
 /**
  * Build the tailoring prompt. Pure — no network, no provider. Tested directly.
@@ -11,9 +10,9 @@ import type { ScoreResult } from "../score-engine/types";
 export function buildTailoringPrompt(
   resumeText: string,
   jobDescription: string,
-  score: ScoreResult,
+  missingSkills: string[],
 ): ChatMessage[] {
-  const missing = score.missing.length ? score.missing.join(", ") : "(none)";
+  const missing = missingSkills.length ? missingSkills.join(", ") : "(none)";
 
   const system = [
     "You are a resume editor that helps a candidate pass ATS keyword screening HONESTLY.",

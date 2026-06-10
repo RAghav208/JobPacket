@@ -342,7 +342,12 @@ export default function PacketWizard() {
 
     // Step 1/2 — tailor the résumé.
     setPacketStatus("tailoring");
-    const t = await tailorAction(cv, job.description || `${job.title} ${job.company}`, providerId || undefined);
+    const t = await tailorAction(
+      cv,
+      job.description || `${job.title} ${job.company}`,
+      score?.missing ?? [],
+      providerId || undefined,
+    );
     if (!t.ok) {
       setPacketStatus(t.reason === "no_provider" ? "no_provider" : "error");
       if (t.reason === "error") setPacketError(t.message);

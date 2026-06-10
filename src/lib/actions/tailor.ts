@@ -23,13 +23,14 @@ export type TailorActionResult =
 export async function tailorAction(
   resume: string,
   jobDescription: string,
+  missingSkills: string[] = [],
   providerId?: string,
 ): Promise<TailorActionResult> {
   const provider = await getFallbackChatProvider(process.env, providerId);
   if (!provider) return { ok: false, reason: "no_provider" };
 
   try {
-    const r = await tailorResume(resume, jobDescription, provider);
+    const r = await tailorResume(resume, jobDescription, provider, { missingSkills });
     return {
       ok: true,
       providerLabel: provider.label,

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { matchSkills, normalizeSkill } from "./match";
+import { matchSkills, normalizeSkill, skillsMentionedIn } from "./match";
 
 describe("normalizeSkill", () => {
   it("maps known aliases to canonical names", () => {
@@ -9,6 +9,24 @@ describe("normalizeSkill", () => {
 
   it("passes through unknown skills trimmed", () => {
     expect(normalizeSkill("  Rust ")).toBe("Rust");
+  });
+});
+
+describe("skillsMentionedIn", () => {
+  it("finds candidate skills present in text, alias-aware", () => {
+    const text = "Built dashboards in JS and wrote SQL queries.";
+    expect(skillsMentionedIn(text, ["JavaScript", "SQL", "Kubernetes"]).sort()).toEqual([
+      "JavaScript",
+      "SQL",
+    ]);
+  });
+
+  it("is boundary-aware: 'Java' does not match inside 'JavaScript'", () => {
+    expect(skillsMentionedIn("JavaScript developer", ["Java"])).toEqual([]);
+  });
+
+  it("returns [] when none are mentioned", () => {
+    expect(skillsMentionedIn("Python only", ["Go", "Rust"])).toEqual([]);
   });
 });
 

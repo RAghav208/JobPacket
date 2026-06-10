@@ -42,7 +42,9 @@ export async function POST(req: Request) {
   }
 
   try {
-    const jobs = await source.search({ query, location, limit: limit ?? 15 });
+    // Clamp client-supplied limit to a sane range (avoid an unbounded request).
+    const safeLimit = Math.min(50, Math.max(1, Math.floor(Number(limit) || 15)));
+    const jobs = await source.search({ query, location, limit: safeLimit });
     return Response.json({ ok: true, jobs });
   } catch (e) {
     return Response.json({ ok: false, reason: "error", message: (e as Error).message });

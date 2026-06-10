@@ -1,7 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { tailorResume } from "./tailor";
 import { buildTailoringPrompt } from "./prompt";
-import { scoreResume } from "../score-engine/score";
 import type { ChatProvider, ChatMessage } from "../provider-registry/types";
 
 /** A fake provider that returns a fixed string, so we test the flow with no network. */
@@ -14,8 +13,7 @@ function fakeProvider(reply: string): ChatProvider {
 }
 
 describe("buildTailoringPrompt", () => {
-  const score = scoreResume("Python.", "Want Python, Kubernetes.");
-  const [system, user] = buildTailoringPrompt("Python.", "Want Python, Kubernetes.", score);
+  const [system, user] = buildTailoringPrompt("Python.", "Want Python, Kubernetes.", ["Kubernetes"]);
 
   it("forbids fabrication in the system prompt", () => {
     expect(system?.content.toLowerCase()).toContain("never invent");

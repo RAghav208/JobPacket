@@ -32,7 +32,7 @@ export default function GapPage() {
 
   function runTailor() {
     setTailor(null);
-    startTransition(async () => setTailor(await tailorAction(resume, jd)));
+    startTransition(async () => setTailor(await tailorAction(resume, jd, result?.missing ?? [])));
   }
 
   return (

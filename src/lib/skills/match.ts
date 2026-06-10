@@ -13,8 +13,10 @@ import type { ScoreResult, SkillMatch } from "../score-engine/types";
  */
 
 const ALIAS_TO_CANON = new Map<string, string>();
+const CANON_TO_VARIANTS = new Map<string, string[]>();
 for (const [canon, syns] of Object.entries(synonyms as Record<string, string[]>)) {
   ALIAS_TO_CANON.set(canon.toLowerCase(), canon);
+  CANON_TO_VARIANTS.set(canon.toLowerCase(), [canon, ...syns]);
   for (const s of syns) ALIAS_TO_CANON.set(String(s).toLowerCase(), canon);
 }
 
@@ -22,6 +24,26 @@ for (const [canon, syns] of Object.entries(synonyms as Record<string, string[]>)
 export function normalizeSkill(s: string): string {
   const key = s.trim().toLowerCase();
   return ALIAS_TO_CANON.get(key) ?? s.trim();
+}
+
+const BOUNDARY = "A-Za-z0-9+#";
+function mentioned(text: string, term: string): boolean {
+  const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(`(?<![${BOUNDARY}])${escaped}(?![${BOUNDARY}])`, "i").test(text);
+}
+
+/**
+ * Which of `skills` are mentioned in `text` (boundary-aware + alias-aware).
+ *
+ * Unlike the keyword detector this checks an EXPLICIT candidate list, so it has
+ * full recall over those skills (not limited to a fixed vocabulary). Used by the
+ * tailor engine to flag which JD-required skills the rewritten résumé now claims.
+ */
+export function skillsMentionedIn(text: string, skills: string[]): string[] {
+  return skills.filter((s) => {
+    const variants = CANON_TO_VARIANTS.get(normalizeSkill(s).toLowerCase()) ?? [s];
+    return variants.some((v) => mentioned(text, v));
+  });
 }
 
 export function matchSkills(cvSkills: string[], jdSkills: string[]): ScoreResult {
