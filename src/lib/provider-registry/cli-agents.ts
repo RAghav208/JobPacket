@@ -48,9 +48,12 @@ function runAgent(
   return new Promise((resolve) => {
     let child;
     try {
-      // shell:true → Windows resolves .cmd/.ps1 shims and PATHEXT.
-      // The prompt is NOT in args; it goes through stdin, so no injection risk.
-      child = spawn(bin, args, { shell: true, windowsHide: true });
+      // shell:true → Windows resolves .cmd/.ps1 shims and PATHEXT. We pass ONE
+      // prepared command string (not an args array) to avoid Node's DEP0190
+      // warning; this is injection-safe because `bin` + `args` are fixed internal
+      // constants (no user data) and the prompt is sent via stdin, never here.
+      const command = [bin, ...args].join(" ");
+      child = spawn(command, { shell: true, windowsHide: true });
     } catch (e) {
       resolve({ code: null, stdout: "", stderr: String(e) });
       return;

@@ -5,6 +5,9 @@
   "description": "Convert spray-and-pray job seekers into snipers. India-first job scraping + explainable resume scoring + AI tailoring. Local-first.",
   "type": "module",
   "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
