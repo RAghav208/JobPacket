@@ -1,0 +1,19 @@
+[
+  { "name": "Postman", "provider": "greenhouse", "token": "postman" },
+  { "name": "Groww", "provider": "greenhouse", "token": "groww" },
+  { "name": "PhonePe", "provider": "greenhouse", "token": "phonepe" },
+  { "name": "Druva", "provider": "greenhouse", "token": "druva" },
+  { "name": "slice", "provider": "greenhouse", "token": "slice" },
+  { "name": "Meesho", "provider": "lever", "token": "meesho" },
+  { "name": "CRED", "provider": "lever", "token": "cred" },
+  { "name": "Mindtickle", "provider": "lever", "token": "mindtickle" },
+  { "name": "Zeta", "provider": "lever", "token": "zeta" },
+  { "name": "Stripe", "provider": "greenhouse", "token": "stripe" },
+  { "name": "Databricks", "provider": "greenhouse", "token": "databricks" },
+  { "name": "GitLab", "provider": "greenhouse", "token": "gitlab" },
+  { "name": "Coinbase", "provider": "greenhouse", "token": "coinbase" },
+  { "name": "Dropbox", "provider": "greenhouse", "token": "dropbox" },
+  { "name": "Figma", "provider": "greenhouse", "token": "figma" },
+  { "name": "Airbnb", "provider": "greenhouse", "token": "airbnb" },
+  { "name": "Robinhood", "provider": "greenhouse", "token": "robinhood" }
+]

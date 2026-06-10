@@ -1,0 +1,91 @@
+@import "tailwindcss";
+
+/* Design tokens — "Quiet Tool" system, reused from the Launchpad project.
+   Light by default; auto-dark via prefers-color-scheme (no JS, no flash). */
+:root {
+  color-scheme: light;
+  --canvas: #f6f7f9;
+  --surface: #ffffff;
+  --hover: #ebedf1;
+  --fg: #0c0c0e;
+  --muted: #6b6b73;
+  --faint: #9a9aa2;
+  --border: #e4e7ec;
+  --border-strong: #d4d8df;
+  --track: #e9ebf0;
+  --ink: #111114;
+  --on-ink: #ffffff;
+  --signal: #2f6feb;
+  --signal-weak: #eaf1fe;
+  --good: #1a7f37;
+  --good-weak: #e6f4ea;
+  --warn: #b5532a;
+  --warn-weak: #fbeee6;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --canvas: #0c0d10;
+    --surface: #141519;
+    --hover: #1a1b21;
+    --fg: #ededf0;
+    --muted: #9395a0;
+    --faint: #65676f;
+    --border: #24262c;
+    --border-strong: #30323a;
+    --track: #23252b;
+    --ink: #f2f2f4;
+    --on-ink: #0c0d10;
+    --signal: #5b8cff;
+    --signal-weak: #16213c;
+    --good: #7ee787;
+    --good-weak: #16271a;
+    --warn: #ffa657;
+    --warn-weak: #2a1c12;
+  }
+}
+
+@theme inline {
+  --font-sans: var(--ff-body);
+  --font-display: var(--ff-display);
+  --font-mono: var(--ff-mono);
+
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-hover: var(--hover);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-track: var(--track);
+  --color-ink: var(--ink);
+  --color-on-ink: var(--on-ink);
+  --color-signal: var(--signal);
+  --color-signal-weak: var(--signal-weak);
+  --color-good: var(--good);
+  --color-good-weak: var(--good-weak);
+  --color-warn: var(--warn);
+  --color-warn-weak: var(--warn-weak);
+
+  --radius-frame: 12px;
+  --radius-card: 9px;
+  --radius-control: 7px;
+}
+
+@layer base {
+  *,
+  ::after,
+  ::before {
+    border-color: var(--border);
+  }
+
+  body {
+    background-color: var(--canvas);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+}

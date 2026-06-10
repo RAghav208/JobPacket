@@ -1,0 +1,15 @@
+node_modules/
+dist/
+.next/
+*.log
+.env
+.env.local
+.DS_Store
+# build caches & generated
+tsconfig.tsbuildinfo
+next-env.d.ts
+# claws orchestration state (not part of the project)
+.claws/
+# local user data (jobpacket stores its SQLite db in ~/.jobpacket, but ignore any stray local copies)
+*.db
+*.sqlite
