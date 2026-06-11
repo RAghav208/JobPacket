@@ -32,16 +32,25 @@ import { createChatProvider } from "./providers";
 import { detectCliAgents, createCliAgentProvider } from "./cli-agents";
 import type { ChatProvider } from "./types";
 
+let providersCache: { at: number; providers: ChatProvider[] } | null = null;
+const PROVIDERS_TTL = 60_000;
+
 /**
  * All available chat providers, in preference order:
  *   CLI agents (Claude → Codex → Gemini) → Ollama server → API keys.
  *
  * CLI agents come first because they use the user's already-authenticated agent
- * with no API key. Detection spawns a process per agent (cached ~60s).
+ * with no API key. The whole list (including the Ollama probe) is cached ~60s
+ * for the default environment, so repeated calls don't re-probe every time.
  */
 export async function getChatProviders(
   env: Record<string, string | undefined> = process.env,
 ): Promise<ChatProvider[]> {
+  const useCache = env === process.env;
+  if (useCache && providersCache && Date.now() - providersCache.at < PROVIDERS_TTL) {
+    return providersCache.providers;
+  }
+
   const providers: ChatProvider[] = [];
 
   // 1) Installed CLI agents, in spec order.
@@ -60,6 +69,7 @@ export async function getChatProviders(
     providers.push(createChatProvider(d, env));
   }
 
+  if (useCache) providersCache = { at: Date.now(), providers };
   return providers;
 }
 

@@ -1,7 +1,5 @@
-import { DatabaseSync } from "node:sqlite";
-import { homedir } from "node:os";
-import { join } from "node:path";
-import { mkdirSync } from "node:fs";
+import type { DatabaseSync } from "node:sqlite";
+import { sharedDb } from "./connection";
 
 /**
  * Cache of AI-extracted JD skills, keyed by a hash of the job description.
@@ -9,7 +7,7 @@ import { mkdirSync } from "node:fs";
  * A job description's required skills never change, so we pay the AI extraction
  * cost ONCE per unique JD — every later search/score that sees the same job is
  * instant. Only AI extractions are cached (keyword-fallback results are not, so
- * they get retried when an agent is available). Same DB file as packets.
+ * they get retried when an agent is available). Uses the shared DB connection.
  */
 
 const SCHEMA = `
@@ -20,18 +18,13 @@ const SCHEMA = `
   );
 `;
 
-let db: DatabaseSync | null = null;
+let ready = false;
 function conn(): DatabaseSync {
-  if (db) return db;
-  const path = process.env.JOBPACKET_DB_PATH;
-  if (path) {
-    db = new DatabaseSync(path);
-  } else {
-    const dir = join(homedir(), ".jobpacket");
-    mkdirSync(dir, { recursive: true });
-    db = new DatabaseSync(join(dir, "jobpacket.db"));
+  const db = sharedDb();
+  if (!ready) {
+    db.exec(SCHEMA);
+    ready = true;
   }
-  db.exec(SCHEMA);
   return db;
 }
 

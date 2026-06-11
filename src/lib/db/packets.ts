@@ -1,7 +1,5 @@
-import { DatabaseSync } from "node:sqlite";
-import { homedir } from "node:os";
-import { join } from "node:path";
-import { mkdirSync } from "node:fs";
+import type { DatabaseSync } from "node:sqlite";
+import { sharedDb } from "./connection";
 import { cvHash } from "./hash";
 import type { JobPosting } from "../job-sources/types";
 
@@ -117,8 +115,7 @@ function rowToRecord(r: Row): PacketRecord {
   };
 }
 
-export function createPacketStore(dbPath: string): PacketStore {
-  const db = new DatabaseSync(dbPath);
+export function createPacketStore(db: DatabaseSync): PacketStore {
   db.exec(SCHEMA);
   migrate(db);
 
@@ -173,14 +170,7 @@ export function createPacketStore(dbPath: string): PacketStore {
 let singleton: PacketStore | null = null;
 function store(): PacketStore {
   if (singleton) return singleton;
-  const path = process.env.JOBPACKET_DB_PATH;
-  if (path) {
-    singleton = createPacketStore(path);
-  } else {
-    const dir = join(homedir(), ".jobpacket");
-    mkdirSync(dir, { recursive: true });
-    singleton = createPacketStore(join(dir, "jobpacket.db"));
-  }
+  singleton = createPacketStore(sharedDb());
   return singleton;
 }
 
