@@ -5,6 +5,25 @@
   "description": "Convert spray-and-pray job seekers into snipers. India-first job scraping + explainable resume scoring + AI tailoring. Local-first.",
   "type": "module",
   "license": "MIT",
+  "author": "Raghav Kejriwal",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RAghav208/JobPacket.git"
+  },
+  "homepage": "https://github.com/RAghav208/JobPacket#readme",
+  "bugs": {
+    "url": "https://github.com/RAghav208/JobPacket/issues"
+  },
+  "keywords": [
+    "job-search",
+    "resume",
+    "ats",
+    "resume-tailoring",
+    "india",
+    "nextjs",
+    "local-first",
+    "ai"
+  ],
   "engines": {
     "node": ">=22"
   },
